@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
+<meta name="theme-color" content="#16324F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="英语学习站">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<title>英语语法 · 英语学习站</title>
+<meta name="description" content="系统英语语法讲解：时态、被动语态、情态动词、从句、冠词、比较级、非谓语动词、虚拟语气、语序倒装，含例句与常见错误对照。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f46e5'/%3E%3Ctext x='32' y='44' font-size='30' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EEN%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="grammar">
+
+<header class="topbar" id="topbar">
+  <div class="container topbar-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">EN</span>
+      <span>英语学习站<small>语法 · 单词 · 句型 · 口语</small></span>
+    </a>
+    <nav class="nav" id="mainNav">
+      <a href="index.html">首页</a>
+      <a href="memorize.html">背单词</a>
+      <a href="vocabulary.html">词库</a>
+      <a href="grammar.html" class="active">语法</a>
+      <a href="sentences.html">句型</a>
+      <a href="speaking.html">口语</a>
+      <a href="ielts.html" class="nav-ielts nav-exam-start">雅思</a>
+      <a href="cet.html" class="nav-ielts">四六级</a>
+    </nav>
+    <button class="icon-btn nav-toggle" id="navToggle" aria-label="打开菜单" aria-expanded="false">☰</button>
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">🌙</button>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <div class="page-head">
+      <span class="eyebrow">Grammar</span>
+      <h1>语法：先理解逻辑，再记住规则</h1>
+      <p class="lead">
+        语法的本质不是“规定”，而是英语用来表达时间和关系的工具。
+        下面每个专题都按「为什么 → 规则 → 例句 → 常见错误」的顺序讲，
+        点开标题就能展开。带 <b>✗ / ✓</b> 的对照是中国人最容易踩的坑，建议重点看。
+      </p>
+    </div>
+
+    <div class="notice notice-info mb-3">
+      <span class="ico">📌</span>
+      <span>
+        <b>怎么用这个页面：</b>不要一次看完十个专题。每次挑一个，读完例句后立刻用这个结构造 3 句关于自己的句子，
+        然后点 🔊 听一遍。语法只有在“用出来”之后才算学会。
+      </span>
+    </div>
+
+    <div class="accordion" id="grammarList">
+      <!-- 由 app.js 渲染 -->
+    </div>
+
+    <div class="section-title">
+      <h2>语法学习的三个提醒</h2>
+      <span class="en">Notes</span>
+    </div>
+
+    <div class="grid grid-3">
+      <article class="card">
+        <div style="font-size:1.6rem">🧠</div>
+        <h3 class="mt-1">先懂逻辑，再背规则</h3>
+        <p class="muted small mb-0">
+          “现在完成时”为什么不能配 yesterday？因为它强调的是“对现在的影响”，
+          而 yesterday 把说话人的视角拉回过去了。理解了这一点，规则就不需要死记。
+        </p>
+      </article>
+      <article class="card">
+        <div style="font-size:1.6rem">🔁</div>
+        <h3 class="mt-1">在例句里学语法</h3>
+        <p class="muted small mb-0">
+          孤立记规则忘得快。把规则和 3–5 个能背下来的例句绑在一起，
+          下次写作时你调取的其实是句子，而不是规则本身。
+        </p>
+      </article>
+      <article class="card">
+        <div style="font-size:1.6rem">✍️</div>
+        <h3 class="mt-1">把错误当成线索</h3>
+        <p class="muted small mb-0">
+          把自己常犯的错误整理成一个清单（比如“第三人称单数总忘加 s”），
+          写完后专门检查这几项。多数人的错误其实高度重复。
+        </p>
+      </article>
+    </div>
+
+    <div class="section-title">
+      <h2>学完语法，去这两个页面练手</h2>
+      <span class="en">Practice</span>
+    </div>
+    <div class="row">
+      <a class="btn btn-ghost" href="sentences.html">🧩 用句型造句练习</a>
+      <a class="btn btn-ghost" href="speaking.html">🗣️ 在场景对话里用出来</a>
+      <a class="btn btn-ghost" href="memorize.html">🚀 巩固词汇基础</a>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div>© 2026 英语学习站 · 所有数据都保存在你自己的浏览器里</div>
+    <div class="footer-links">
+      <a href="index.html">首页</a>
+      <a href="memorize.html">背单词</a>
+      <a href="vocabulary.html">词库</a>
+      <a href="sentences.html">句型</a>
+      <a href="speaking.html">口语</a>
+      <a href="ielts.html">雅思</a>
+      <a href="cet.html">四六级</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

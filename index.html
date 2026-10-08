@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
+<meta name="theme-color" content="#16324F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="英语学习站">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<title>英语学习站 · 语法、词汇、口语与雅思备考</title>
+<meta name="description" content="一个专注英语学习的网站：系统语法讲解、可选词书的背单词工具、万能句型、场景口语，以及雅思听说读写四科备考。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316324F'/%3E%3Ctext x='32' y='44' font-size='30' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EEN%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="home">
+
+<header class="topbar" id="topbar">
+  <div class="container topbar-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">EN</span>
+      <span>英语学习站<small>English Learning Hub</small></span>
+    </a>
+    <nav class="nav" id="mainNav">
+      <a href="index.html" class="active">首页</a>
+      <a href="memorize.html">背单词</a>
+      <a href="vocabulary.html">词库</a>
+      <a href="grammar.html">语法</a>
+      <a href="sentences.html">句型</a>
+      <a href="speaking.html">口语</a>
+      <a href="ielts.html" class="nav-ielts nav-exam-start">雅思</a>
+      <a href="cet.html" class="nav-ielts">四六级</a>
+    </nav>
+    <button class="icon-btn nav-toggle" id="navToggle" aria-label="打开菜单" aria-expanded="false">☰</button>
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">🌙</button>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <!-- ============ Hero ============ -->
+    <section class="hero">
+      <span class="eyebrow">English Learning Hub</span>
+      <h1>把英语学明白：从方法，到练习，到分数</h1>
+      <p class="lead">
+        八本词书的背单词工具、系统语法、万能句型、真实场景口语，以及雅思和四六级两个备考专区。
+        不用注册，打开就能用；背单词进度存在本地，断网也能继续。
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-lg" href="memorize.html">开始背单词</a>
+        <a class="btn btn-lg btn-ghost" href="ielts.html">雅思备考</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><b id="statWords">—</b><span>核心单词 + 雅思词</span></div>
+        <div class="hero-stat"><b id="statBooks">—</b><span>可选词书</span></div>
+        <div class="hero-stat"><b id="statExams">—</b><span>备考单项</span></div>
+        <div class="hero-stat"><b id="statPatterns">—</b><span>万能句型</span></div>
+        <div class="hero-stat"><b id="statScenes">—</b><span>口语场景</span></div>
+      </div>
+    </section>
+
+    <!-- ============ 快速开始 ============ -->
+    <div class="section-title">
+      <h2>从哪里开始</h2>
+      <span class="en">Start here</span>
+    </div>
+
+    <div class="grid grid-2">
+      <a class="card module-card" href="memorize.html">
+        <div class="mc-icon">🃏</div>
+        <h3>背单词</h3>
+        <p class="muted small mb-0">
+          八本词书任你挑：核心基础、高考、四级、六级、雅思核心、雅思学术、雅思写作、雅思口语，共 862 个词。
+          内置遗忘曲线，只在该复习的时候提醒你。
+        </p>
+        <span class="mc-go">选词书开始</span>
+      </a>
+      <a class="card module-card" href="ielts.html">
+        <div class="mc-icon">🎯</div>
+        <h3>雅思备考</h3>
+        <p class="muted small mb-0">
+          听力、阅读、写作、口语四个单项：考试结构、核心技巧、高频词，
+          还有能直接动手的听写、判断题和口语计时练习。
+        </p>
+        <span class="mc-go">进入雅思专区</span>
+      </a>
+      <a class="card module-card" href="cet.html">
+        <div class="mc-icon">🎓</div>
+        <h3>四六级备考</h3>
+        <p class="muted small mb-0">
+          写作、听力、阅读、翻译四个板块。翻译是四六级独有、也最容易提分的部分，
+          里面给了三步翻译法和文化类高频表达。
+        </p>
+        <span class="mc-go">进入四六级专区</span>
+      </a>
+      <a class="card module-card" href="speaking.html">
+        <div class="mc-icon">🗣️</div>
+        <h3>口语练习</h3>
+        <p class="muted small mb-0">
+          8 个真实场景对话，每句都能点读，还有连读、弱读、语调的发音要点。
+          练一段只需五分钟。
+        </p>
+        <span class="mc-go">开始跟读</span>
+      </a>
+    </div>
+
+    <!-- ============ 学习路径 ============ -->
+    <div class="section-title">
+      <h2>一条可执行的路径</h2>
+      <span class="en">How it works</span>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card">
+        <div class="tag tag-brass mb-2">第 1 步</div>
+        <h4>先建立词汇地基</h4>
+        <p class="muted small mb-0">从「核心基础」开始，每天 10–15 个词，先跑通复习节奏。</p>
+      </div>
+      <div class="card">
+        <div class="tag tag-brass mb-2">第 2 步</div>
+        <h4>补上语法骨架</h4>
+        <p class="muted small mb-0">时态、从句、冠词优先。读懂规则后立刻用「句型」造三句自己的话。</p>
+      </div>
+      <div class="card">
+        <div class="tag tag-brass mb-2">第 3 步</div>
+        <h4>把嘴打开</h4>
+        <p class="muted small mb-0">每天跟读一段场景对话，模仿语音语调。说不出口的知识，考试时也用不出来。</p>
+      </div>
+      <div class="card">
+        <div class="tag tag-brass mb-2">第 4 步</div>
+        <h4>针对目标冲刺</h4>
+        <p class="muted small mb-0">要考雅思就切到雅思词书，用四科技巧过一遍，再拿计时器压时间。</p>
+      </div>
+    </div>
+
+    <!-- ============ 全部模块 ============ -->
+    <div class="section-title">
+      <h2>全部模块</h2>
+      <span class="en">All modules</span>
+    </div>
+
+    <div class="grid grid-2">
+      <a class="card module-card" href="grammar.html">
+        <div class="mc-icon">📐</div>
+        <h3>语法 Grammar</h3>
+        <p class="muted small mb-0">
+          10 个专题：时态、被动语态、情态动词、从句、冠词、比较级、非谓语、虚拟语气、语序倒装。
+          每个专题都有规则总结、例句和「中国人最容易犯的错」对照。
+        </p>
+        <span class="mc-go">进入语法</span>
+      </a>
+      <a class="card module-card" href="vocabulary.html">
+        <div class="mc-icon">📖</div>
+        <h3>词库 Vocabulary</h3>
+        <p class="muted small mb-0">
+          按词书和主题浏览全部单词，每张卡都有音标、词性、释义、例句和翻译，
+          支持搜索和逐词朗读。
+        </p>
+        <span class="mc-go">浏览词库</span>
+      </a>
+      <a class="card module-card" href="sentences.html">
+        <div class="mc-icon">🧩</div>
+        <h3>句型 Patterns</h3>
+        <p class="muted small mb-0">
+          10 个万能句型模板。掌握一个 <span class="en">It is + adj. + to do</span>，
+          就能撑起你一半的口语表达。
+        </p>
+        <span class="mc-go">学习句型</span>
+      </a>
+      <a class="card module-card" href="memorize.html">
+        <div class="mc-icon">📊</div>
+        <h3>学习进度 Progress</h3>
+        <p class="muted small mb-0">
+          连续打卡天数、今日新学、待复习、已掌握，还有每本词书的完成度，
+          都在背单词页一眼看清。
+        </p>
+        <span class="mc-go">查看进度</span>
+      </a>
+    </div>
+
+    <!-- ============ 学习方法 ============ -->
+    <div class="section-title" id="methods">
+      <h2>六种真正有效的学习方法</h2>
+      <span class="en">How to learn</span>
+    </div>
+    <p class="lead mb-3">
+      方法比努力更重要。下面六条都有认知科学依据，挑 2–3 条组合起来用，比盲目刷题有效得多。
+    </p>
+    <div class="grid grid-3" id="methodList"></div>
+
+    <!-- ============ 一周计划 ============ -->
+    <div class="section-title">
+      <h2>一周入门计划（每天 25 分钟）</h2>
+      <span class="en">Weekly plan</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>时间</th><th>做什么</th><th>去哪一页</th><th>时长</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>每天</td><td>复习到期单词 + 学 10 个新词</td><td><a href="memorize.html">背单词</a></td><td>10 分钟</td></tr>
+          <tr><td>每天</td><td>跟读一段对话，模仿语音语调</td><td><a href="speaking.html">口语</a></td><td>8 分钟</td></tr>
+          <tr><td>周一 / 三 / 五</td><td>精读一个语法专题，仿写例句</td><td><a href="grammar.html">语法</a></td><td>15 分钟</td></tr>
+          <tr><td>周二 / 四</td><td>挑一个句型，造 5 句关于自己的话</td><td><a href="sentences.html">句型</a></td><td>10 分钟</td></tr>
+          <tr><td>周六</td><td>用拼写模式过一遍本周错词</td><td><a href="memorize.html">背单词</a></td><td>20 分钟</td></tr>
+          <tr><td>周日</td><td>轻量日：听音频、读主题词汇</td><td><a href="vocabulary.html">词库</a></td><td>15 分钟</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notice notice-ok mt-3">
+      <span class="ico">🌱</span>
+      <span><b>最重要的一条：不要追求一次学会。</b>
+      语言是「见过很多次、用错几次、慢慢说顺」的过程。每天 25 分钟坚持一个月，比周末突击 8 小时有效得多。</span>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div>© 2026 英语学习站 · 数据保存在你自己的浏览器里，不上传任何内容</div>
+    <div class="footer-links">
+      <a href="memorize.html">背单词</a>
+      <a href="vocabulary.html">词库</a>
+      <a href="grammar.html">语法</a>
+      <a href="sentences.html">句型</a>
+      <a href="speaking.html">口语</a>
+      <a href="ielts.html">雅思</a>
+      <a href="cet.html">四六级</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
+<meta name="theme-color" content="#16324F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="英语学习站">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<title>雅思备考 · 听力 阅读 写作 口语 · 英语学习站</title>
+<meta name="description" content="雅思四个单项备考：听力、阅读、写作、口语的考试结构、核心技巧、高频词与可动手的练习（听写、判断题、口语计时器）。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316324F'/%3E%3Ctext x='32' y='44' font-size='30' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EEN%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="ielts">
+
+<header class="topbar" id="topbar">
+  <div class="container topbar-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">EN</span>
+      <span>英语学习站<small>English Learning Hub</small></span>
+    </a>
+    <nav class="nav" id="mainNav">
+      <a href="index.html">首页</a>
+      <a href="memorize.html">背单词</a>
+      <a href="vocabulary.html">词库</a>
+      <a href="grammar.html">语法</a>
+      <a href="sentences.html">句型</a>
+      <a href="speaking.html">口语</a>
+      <a href="ielts.html" class="active nav-ielts nav-exam-start">雅思</a>
+      <a href="cet.html" class="nav-ielts">四六级</a>
+    </nav>
+    <button class="icon-btn nav-toggle" id="navToggle" aria-label="打开菜单" aria-expanded="false">☰</button>
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">🌙</button>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <div class="page-head">
+      <span class="eyebrow">IELTS</span>
+      <h1>雅思备考：四个单项，一次讲清楚</h1>
+      <p class="lead">
+        听力、阅读、写作、口语各一块。每一块都按「考试结构 → 核心技巧 → 高频词 → 动手练习」排列，
+        看完就能练。带屏幕的练习可以直接在页面上做。
+      </p>
+    </div>
+
+    <div class="ielts-head">
+      <div>
+        <div class="ielts-band">9.0</div>
+        <div class="muted small">满分 · 四个单项各自计分后平均</div>
+      </div>
+      <div class="spacer"></div>
+      <div class="grid grid-4 grid-stats" style="flex:1 1 380px;max-width:520px">
+        <div class="stat-box"><b>30′</b><span>听力</span></div>
+        <div class="stat-box"><b>60′</b><span>阅读</span></div>
+        <div class="stat-box"><b>60′</b><span>写作</span></div>
+        <div class="stat-box"><b>14′</b><span>口语</span></div>
+      </div>
+    </div>
+
+    <div class="tabs mb-3" id="ieltsTabs" role="tablist"></div>
+
+    <div class="exam-body">
+      <div class="section-nav" id="ieltsNav"></div>
+      <div id="ieltsPanels"></div>
+    </div>
+
+    <div class="section-title">
+      <h2>配套词书</h2>
+      <span class="en">Word books</span>
+    </div>
+    <p class="lead mb-3">
+      雅思的四本词书已经在背单词工具里准备好了。建议同时勾选「雅思核心 + 雅思学术」，
+      写作和口语的词书在考前一个月切过去。
+    </p>
+    <div class="grid grid-2">
+      <a class="card module-card" href="memorize.html">
+        <div class="mc-icon">🎯</div>
+        <h3>雅思核心词 + 学术词</h3>
+        <p class="muted small mb-0">59 个高频词，覆盖听说读写四项的共同考点。按遗忘曲线安排复习。</p>
+        <span class="mc-go">开始背</span>
+      </a>
+      <a class="card module-card" href="memorize.html">
+        <div class="mc-icon">✍️</div>
+        <h3>写作提分词 + 口语表达</h3>
+        <p class="muted small mb-0">58 个提分词组与地道说法，考前一个月切过去，作文口语立刻不一样。</p>
+        <span class="mc-go">开始背</span>
+      </a>
+    </div>
+
+    <div class="section-title">
+      <h2>备考节奏建议</h2>
+      <span class="en">Study plan</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>阶段</th><th>重点</th><th>每天投入</th><th>用本站做什么</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>第 1–4 周<br><span class="muted small">打基础</span></td>
+            <td>词汇 + 语法骨架</td>
+            <td>40 分钟</td>
+            <td>背「雅思核心词」15 个/天；<a href="grammar.html">语法</a>里过一遍时态与从句</td>
+          </tr>
+          <tr>
+            <td>第 5–8 周<br><span class="muted small">攻技巧</span></td>
+            <td>四科技巧 + 题型熟悉</td>
+            <td>60 分钟</td>
+            <td>本页的四科技巧各过一遍；听力做听写练习；阅读做 T/F/NG 练习</td>
+          </tr>
+          <tr>
+            <td>第 9–12 周<br><span class="muted small">提分冲刺</span></td>
+            <td>写作口语 + 计时训练</td>
+            <td>90 分钟</td>
+            <td>切到「雅思写作/口语」词书；用 Part 2 计时器每天说一段；写作按结构写全文</td>
+          </tr>
+          <tr>
+            <td>考前两周</td>
+            <td>模考 + 错题复盘</td>
+            <td>120 分钟</td>
+            <td>背单词切「看义拼写」模式查漏；把错的词单独过一遍</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notice notice-brass mt-3">
+      <span class="ico">⏱</span>
+      <span>
+        <b>最重要的一件事：所有练习都要计时。</b>
+        雅思是速度考试，正确率再高，做不完也是白搭。阅读 20 分钟一篇、Task 2 40 分钟、
+        Part 2 说满两分钟——用本页的计时器和手机秒表把节奏练成肌肉记忆。
+      </span>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div>© 2026 英语学习站 · 数据保存在你自己的浏览器里</div>
+    <div class="footer-links">
+      <a href="index.html">首页</a>
+      <a href="memorize.html">背单词</a>
+      <a href="vocabulary.html">词库</a>
+      <a href="grammar.html">语法</a>
+      <a href="sentences.html">句型</a>
+      <a href="speaking.html">口语</a>
+      <a href="cet.html">四六级</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

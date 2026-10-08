@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
+<meta name="theme-color" content="#16324F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="英语学习站">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<title>词库 · 英语学习站</title>
+<meta name="description" content="按词书和主题浏览英语单词，含音标、词性、释义、例句与翻译，支持搜索与朗读。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316324F'/%3E%3Ctext x='32' y='44' font-size='30' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EEN%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="vocabulary">
+
+<header class="topbar" id="topbar">
+  <div class="container topbar-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">EN</span>
+      <span>英语学习站<small>English Learning Hub</small></span>
+    </a>
+    <nav class="nav" id="mainNav">
+      <a href="index.html">首页</a>
+      <a href="memorize.html">背单词</a>
+      <a href="vocabulary.html" class="active">词库</a>
+      <a href="grammar.html">语法</a>
+      <a href="sentences.html">句型</a>
+      <a href="speaking.html">口语</a>
+      <a href="ielts.html" class="nav-ielts nav-exam-start">雅思</a>
+      <a href="cet.html" class="nav-ielts">四六级</a>
+    </nav>
+    <button class="icon-btn nav-toggle" id="navToggle" aria-label="打开菜单" aria-expanded="false">☰</button>
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">🌙</button>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <div class="page-head">
+      <span class="eyebrow">Vocabulary</span>
+      <h1>词库：先按词书挑，再按主题看</h1>
+      <p class="lead">
+        同一主题的词会反复出现在相似的语境里，一起记能互相"带"起来。
+        先选一本词书，再用主题缩小范围，或者直接搜。
+      </p>
+    </div>
+
+    <div class="tabs mb-3" id="bookTabs" role="tablist"></div>
+
+    <div class="search-wrap">
+      <input type="search" id="wordSearch" placeholder="搜索单词、中文释义或例句……" aria-label="搜索单词">
+    </div>
+
+    <div class="chips" id="wordChips"></div>
+
+    <div class="row between mb-2">
+      <div class="muted small" id="wordCount">—</div>
+      <div class="muted small">点卡片右上角的 🔊 可以听发音</div>
+    </div>
+
+    <div class="grid grid-3" id="wordList"></div>
+
+    <div class="center mt-3">
+      <button class="btn btn-ghost hide" id="wordMore" type="button">显示更多</button>
+    </div>
+
+    <div class="notice notice-brass mt-3">
+      <span class="ico">🃏</span>
+      <span>
+        光看不练记不住。选好词书后去 <a href="memorize.html">背单词</a>，
+        系统会把它们变成题目，并按遗忘曲线安排复习。
+      </span>
+    </div>
+
+    <div class="section-title">
+      <h2>记单词的四个建议</h2>
+      <span class="en">Quick tips</span>
+    </div>
+
+    <div class="grid grid-2">
+      <article class="card">
+        <h3>1 · 记搭配，不要记孤立的词</h3>
+        <p class="muted small mb-0">
+          记住 <span class="en">make a decision</span> 比记住 <span class="en">decision = 决定</span> 有用得多。
+          名词和动词常常是固定搭档，一起背才用得出。
+        </p>
+      </article>
+      <article class="card">
+        <h3>2 · 用中文回忆英文，而不是反过来</h3>
+        <p class="muted small mb-0">
+          看到中文能说出英文，才算主动词汇。只认得不算会用——这也是「背单词」里拼写模式存在的理由。
+        </p>
+      </article>
+      <article class="card">
+        <h3>3 · 每个词给一个属于你的句子</h3>
+        <p class="muted small mb-0">
+          例句里如果出现你自己的名字、你的工作、你的城市，记忆强度会明显高于抽象例句。
+        </p>
+      </article>
+      <article class="card">
+        <h3>4 · 同意量，不要贪多</h3>
+        <p class="muted small mb-0">
+          一天 10–15 个新词是多数人可持续的上限。学得少但复习到位，一个月后真正记住的反而更多。
+        </p>
+      </article>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div>© 2026 英语学习站 · 数据保存在你自己的浏览器里</div>
+    <div class="footer-links">
+      <a href="index.html">首页</a>
+      <a href="memorize.html">背单词</a>
+      <a href="grammar.html">语法</a>
+      <a href="sentences.html">句型</a>
+      <a href="speaking.html">口语</a>
+      <a href="ielts.html">雅思</a>
+      <a href="cet.html">四六级</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
