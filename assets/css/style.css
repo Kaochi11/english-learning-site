@@ -865,6 +865,8 @@ tbody tr:hover { background: var(--surface-2); }
    -------------------------------------------------------------------------- */
 .word-card {
   position: relative;
+  display: flex;
+  flex-direction: column;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--r);
@@ -892,6 +894,8 @@ tbody tr:hover { background: var(--surface-2); }
 .word-ex { font-size: .88rem; color: var(--text-soft); }
 .word-ex .en { display: block; }
 .word-ex .zh { display: block; color: var(--muted); font-size: .83rem; }
+/* 词卡内的标签贴底：让同一行里"有例句"和"无例句"的卡片底部对齐 */
+.word-card > .tags { margin-top: auto; }
 
 /* --------------------------------------------------------------------------
    15 · 词书选择器

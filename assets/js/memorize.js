@@ -22,6 +22,19 @@
   /* ======================================================================
      1 · 词库
      ====================================================================== */
+  /* 词书归属判断：b 可能是字符串（项目原有）或数组（重叠词书）。
+     重叠设计下同一个词会同时属于多本词书，必须用"包含"而不是"相等"。 */
+  function inBooks(bookVal, bookList) {
+    if (!bookVal) return bookList.indexOf("core") !== -1;
+    if (Object.prototype.toString.call(bookVal) === "[object Array]") {
+      for (var i = 0; i < bookVal.length; i++) {
+        if (bookList.indexOf(bookVal[i]) !== -1) return true;
+      }
+      return false;
+    }
+    return bookList.indexOf(bookVal) !== -1;
+  }
+
   function buildDeck() {
     var seen = {};
     var out = [];
@@ -31,7 +44,7 @@
       var item = {
         key: key,
         w: w.w, p: w.p, t: w.t, m: w.m, e: w.e, z: w.z,
-        book: w.b || "core",
+        book: w.b || "core",        // 字符串或数组（重叠词书）
         cat: w.c
       };
       seen[key] = item;
@@ -132,7 +145,7 @@
   function bookStats(id) {
     var total = 0, learned = 0, mastered = 0;
     DECK.forEach(function (item) {
-      if (item.book !== id) return;
+      if (!inBooks(item.book, [id])) return;
       total++;
       var s = progress.words[item.key];
       if (s && s.seen > 0) learned++;
@@ -324,7 +337,7 @@
 
   function deckForBooks() {
     var books = activeBooks();
-    return DECK.filter(function (it) { return books.indexOf(it.book) > -1; });
+    return DECK.filter(function (it) { return inBooks(it.book, books); });
   }
 
   function buildQueue() {
@@ -640,7 +653,8 @@
 
     var s = progress.words[item.key] || { box: 0 };
     var tag = window.byId("fcTag");
-    if (tag) tag.textContent = session.round > 1 ? "第 " + session.round + " 轮 · 重练" : bookMeta(item.book).name;
+    if (tag) tag.textContent = session.round > 1 ? "第 " + session.round + " 轮 · 重练"
+      : bookMeta(Object.prototype.toString.call(item.book) === "[object Array]" ? item.book[0] : item.book).name;
     var box = window.byId("fcBox");
     if (box) box.textContent = s.box === 0 ? "新词" : "第 " + s.box + " 盒";
 
@@ -724,7 +738,17 @@
         '<div class="fc-meaning">' + window.escapeHTML(item.m) + '</div>' +
         '<div class="fc-divider"></div>' +
         '<div class="fc-extra"><span class="en">' +
-          window.escapeHTML(item.e.replace(new RegExp(item.w.split(" ")[0], "i"), "______")) +
+          window.escapeHTML((function () {
+        if (!item.e) return item.p ? ("发音提示：" + item.p + "（本词暂无例句）") : "（本词暂无例句，凭释义回忆）";
+        var head = item.w.split(" ")[0];
+        var re;
+        try {
+          re = new RegExp(head.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+        } catch (err) {
+          return item.e;
+        }
+        return item.e.replace(re, "______");
+      })()) +
         '</span><span class="zh">' + window.escapeHTML(item.z) + '</span></div>';
     } else {
       card.innerHTML =

@@ -287,6 +287,9 @@
       seen[k] = 1; unique++;
     });
     set("statWords", unique || "—");
+    // 同一页文案里的词量（保持与顶部统计一致，避免写死数字过时）
+    var inlineWords = document.querySelector(".stat-words-inline");
+    if (inlineWords) inlineWords.textContent = unique ? unique.toLocaleString("en-US") : "—";
     set("statBooks", (window.WORDBOOKS || []).length || "—");
     set("statExams", ((window.IELTS_SKILLS || []).length + (window.CET_SKILLS || []).length) || "—");
     set("statPatterns", (window.SENTENCE_PATTERNS || []).length || "—");
@@ -313,7 +316,21 @@
   /* ======================================================================
      11 · 词库
      ====================================================================== */
-  function bookOf(w) { return w.b || "core"; }
+  /* 词书归属：可能是字符串（项目原有）或数组（重叠词书，如 ["cet4","cet6"]）。
+     返回主词书（数组取第一个），另提供 belongsTo() 做归属判断。 */
+  function bookOf(w) {
+    var b = w.b;
+    if (!b) return "core";
+    return (b instanceof Array) ? (b[0] || "core") : b;
+  }
+
+  /* 某词是否属于指定词书（支持重叠） */
+  function belongsTo(w, bookId) {
+    var b = w.b;
+    if (!b) return bookId === "core";
+    if (b instanceof Array) return b.indexOf(bookId) !== -1;
+    return b === bookId;
+  }
 
   function allWords() {
     // 按单词去重，保留第一次出现的释义
@@ -345,8 +362,9 @@
     if (bookBar) {
       var counts = { all: words.length };
       words.forEach(function (w) {
-        var b = bookOf(w);
-        counts[b] = (counts[b] || 0) + 1;
+        (window.WORDBOOKS || []).forEach(function (bk) {
+          if (belongsTo(w, bk.id)) counts[bk.id] = (counts[bk.id] || 0) + 1;
+        });
       });
       var html = '<button class="tab active" data-tab="all" role="tab" aria-selected="true">全部 <span class="muted">' + counts.all + '</span></button>';
       (window.WORDBOOKS || []).forEach(function (b) {
@@ -400,7 +418,7 @@
     }
 
     function matches(w) {
-      if (state.book !== "all" && bookOf(w) !== state.book) return false;
+      if (state.book !== "all" && !belongsTo(w, state.book)) return false;
       if (state.cat !== "all" && w.c !== state.cat) return false;
       if (state.q) {
         var q = state.q;
@@ -410,6 +428,21 @@
             (w.z || "").indexOf(state.q) === -1) return false;
       }
       return true;
+    }
+
+    /* 搜索相关度：精确 > 前缀 > 单词包含 > 释义 > 例句/翻译。
+       没有它时，搜 "in" 会返回 988 条且按数组顺序排列，
+       真正等于 "in" 的词排在第 862 位，用户要翻 36 页。 */
+    function relevance(w, q) {
+      if (!q) return 0;
+      var word = w.w.toLowerCase();
+      if (word === q) return 0;
+      if (word.indexOf(q) === 0) return 1;
+      if (word.indexOf(q) !== -1) return 2;
+      if ((w.m || "").indexOf(q) !== -1) return 3;
+      if ((w.e || "").toLowerCase().indexOf(q) !== -1) return 4;
+      if ((w.z || "").indexOf(q) !== -1) return 5;
+      return 6;
     }
 
     function cardHTML(w) {
@@ -423,11 +456,13 @@
             '<button class="speak-btn" data-speak="' + esc(w.w) + '" title="朗读" style="margin-left:auto">🔊</button>' +
           '</div>' +
           '<div class="word-zh">' + esc(w.m) + '</div>' +
-          '<div class="word-ex">' +
-            '<span class="en">' + esc(w.e) + '</span>' +
-            '<span class="zh">' + esc(w.z) + '</span>' +
-          '</div>' +
-          '<div class="tags" style="margin-top:11px">' +
+          (w.e
+            ? '<div class="word-ex">' +
+                '<span class="en">' + esc(w.e) + '</span>' +
+                '<span class="zh">' + esc(w.z) + '</span>' +
+              '</div>'
+            : '') +
+          '<div class="tags">' +
             (book && book.id !== "core" ? '<span class="tag tag-brass">' + book.icon + ' ' + esc(book.name) + '</span>' : '') +
             (cat ? '<span class="tag">' + cat.icon + ' ' + esc(cat.name) + '</span>' : '') +
           '</div>' +
@@ -436,6 +471,14 @@
 
     function render() {
       state.filtered = words.filter(matches);
+      // 有搜索词时按相关度排序；同一档内保持原有（词书/词频）顺序，保证结果稳定
+      if (state.q) {
+        var q = state.q.toLowerCase();
+        state.filtered = state.filtered
+          .map(function (w, i) { return { w: w, i: i, r: relevance(w, q) }; })
+          .sort(function (a, b) { return a.r - b.r || a.i - b.i; })
+          .map(function (x) { return x.w; });
+      }
       var slice = state.filtered.slice(0, state.shown);
 
       if (countEl) {
