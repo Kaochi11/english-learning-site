@@ -1,60 +1,54 @@
-/* Service Worker：优先走网络（保证内容是最新的），断网时回退到缓存。
-   这样用手机流量或 WiFi 打开过一次之后，地铁上、没信号时也能继续背单词。 */
-
-var CACHE = "en-site-v1";
-
-var ASSETS = [
-  "./",
-  "./index.html",
-  "./grammar.html",
-  "./vocabulary.html",
-  "./sentences.html",
-  "./speaking.html",
-  "./memorize.html",
-  "./manifest.webmanifest",
-  "./assets/css/style.css",
-  "./assets/js/data.js",
-  "./assets/js/app.js",
-  "./assets/js/memorize.js",
-  "./assets/icon.svg"
+/* 静态页面可离线；完整词库在第一次浏览词库或背词页后缓存。 */
+var PREFIX = "en-learning:" + self.registration.scope + ":";
+var CACHE = PREFIX + "v4";
+var SHELL = [
+  "./", "./index.html", "./sources.html", "./grammar.html", "./vocabulary.html",
+  "./sentences.html", "./speaking.html", "./memorize.html", "./ielts.html", "./cet.html",
+  "./manifest.webmanifest", "./LICENSE-ECDICT.txt",
+  "./assets/css/style.css", "./assets/css/studio.css",
+  "./assets/js/catalog-overview.js", "./assets/js/study-stats.js",
+  "./assets/js/data.js", "./assets/js/app.js", "./assets/js/word-catalog.js", "./assets/js/memorize.js",
+  "./assets/icon.svg", "./assets/icon-180.png", "./assets/icon-512.png"
 ];
+var EXTRA = new URL("./assets/js/data-extra.js", self.registration.scope).href;
 
-self.addEventListener("install", function (e) {
-  e.waitUntil(
-    caches.open(CACHE).then(function (c) {
-      return Promise.all(ASSETS.map(function (url) {
-        return c.add(url).catch(function () { /* 单个文件失败不影响安装 */ });
-      }));
-    }).then(function () { return self.skipWaiting(); })
-  );
+self.addEventListener("install", function (event) {
+  event.waitUntil(caches.open(CACHE).then(async function (cache) {
+    await cache.addAll(SHELL.map(function (url) { return new Request(url, { cache: "reload" }); }));
+    // 支持直接先打开词库页，而该次加载尚未被新 SW 控制的情况。
+    var windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    var wordPage = windows.some(function (client) {
+      if (!client.url.startsWith(self.registration.scope)) return false;
+      return /\/(?:vocabulary|memorize)\.html$/.test(new URL(client.url).pathname);
+    });
+    if (wordPage) await cache.add(EXTRA).catch(function () {});
+    return self.skipWaiting();
+  }));
 });
 
-self.addEventListener("activate", function (e) {
-  e.waitUntil(
-    caches.keys().then(function (keys) {
-      return Promise.all(keys.map(function (k) {
-        return k === CACHE ? null : caches.delete(k);
-      }));
-    }).then(function () { return self.clients.claim(); })
-  );
+self.addEventListener("activate", function (event) {
+  event.waitUntil(caches.keys().then(function (keys) {
+    return Promise.all(keys.filter(function (key) {
+      return key.startsWith(PREFIX) && key !== CACHE;
+    }).map(function (key) { return caches.delete(key); }));
+  }).then(function () { return self.clients.claim(); }));
 });
 
-self.addEventListener("fetch", function (e) {
-  var req = e.request;
-  if (req.method !== "GET") return;
-  if (new URL(req.url).origin !== self.location.origin) return;
-
-  e.respondWith(
-    fetch(req).then(function (res) {
-      if (res && res.ok) {
-        var copy = res.clone();
-        caches.open(CACHE).then(function (c) { c.put(req, copy); }).catch(function () {});
-      }
-      return res;
-    }).catch(function () {
-      return caches.match(req).then(function (hit) {
-        return hit || caches.match("./index.html");
-      });
-    })
-  );
+self.addEventListener("fetch", function (event) {
+  var request = event.request;
+  if (request.method !== "GET" || !request.url.startsWith(self.registration.scope)) return;
+  var network = fetch(request);
+  var cache = caches.open(CACHE);
+  event.waitUntil(network.then(function (response) {
+    if (!response.ok) return;
+    var copy = response.clone();
+    return cache.then(function (store) { return store.put(request, copy); });
+  }).catch(function () {}));
+  event.respondWith(network.catch(async function () {
+    var store = await cache;
+    var hit = await store.match(request, { ignoreSearch: request.mode === "navigate" });
+    if (hit) return hit;
+    if (request.mode === "navigate") return (await store.match("./index.html")) || Response.error();
+    return Response.error();
+  }));
 });

@@ -85,6 +85,8 @@
 
   function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
+    var chrome = document.querySelector('meta[name="theme-color"]');
+    if (chrome) chrome.content = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
     var btn = byId("themeBtn");
     if (btn) {
       btn.textContent = theme === "dark" ? "☀️" : "🌙";
@@ -119,6 +121,11 @@
     var nav = byId("mainNav");
     if (!toggle || !nav) return;
 
+    function closeNav() {
+      nav.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+    }
+
     toggle.addEventListener("click", function (e) {
       e.stopPropagation();
       var open = nav.classList.toggle("open");
@@ -128,11 +135,14 @@
     document.addEventListener("click", function (e) {
       if (!nav.classList.contains("open")) return;
       if (nav.contains(e.target) || toggle.contains(e.target)) return;
-      nav.classList.remove("open");
+      closeNav();
     });
 
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && nav.classList.contains("open")) nav.classList.remove("open");
+      if (e.key === "Escape" && nav.classList.contains("open")) {
+        closeNav();
+        toggle.focus();
+      }
     });
   }
 
@@ -168,7 +178,8 @@
      6 · Service Worker（离线可用，仅 https）
      ====================================================================== */
   function registerServiceWorker() {
-    if (!("serviceWorker" in navigator) || location.protocol !== "https:") return;
+    if (!("serviceWorker" in navigator) ||
+        (location.protocol !== "https:" && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname))) return;
     window.addEventListener("load", function () {
       navigator.serviceWorker.register("sw.js").catch(function () { /* 忽略 */ });
     });
@@ -279,71 +290,67 @@
      ====================================================================== */
   function initHomeStats() {
     var set = function (id, v) { var el = byId(id); if (el) el.textContent = v; };
-    var seen = {};
-    var unique = 0;
-    (window.WORD_BANK || []).forEach(function (w) {
-      var k = w.w.toLowerCase();
-      if (seen[k]) return;
-      seen[k] = 1; unique++;
-    });
-    set("statWords", unique || "—");
-    // 同一页文案里的词量（保持与顶部统计一致，避免写死数字过时）
-    var inlineWords = document.querySelector(".stat-words-inline");
-    if (inlineWords) inlineWords.textContent = unique ? unique.toLocaleString("en-US") : "—";
-    set("statBooks", (window.WORDBOOKS || []).length || "—");
-    set("statExams", ((window.IELTS_SKILLS || []).length + (window.CET_SKILLS || []).length) || "—");
-    set("statPatterns", (window.SENTENCE_PATTERNS || []).length || "—");
-    set("statScenes", (window.SPEAKING_SCENARIOS || []).length || "—");
+    var data = window.CATALOG_OVERVIEW;
+    if (!data) return;
+    set("statWords", data.words.toLocaleString("zh-CN"));
+    set("statExamples", data.examples.toLocaleString("zh-CN"));
+    set("statBooks", data.books.length);
   }
 
-  function initMethods() {
-    var wrap = byId("methodList");
-    if (!wrap) return;
-    wrap.innerHTML = STUDY_METHODS.map(function (m) {
-      return '<article class="card">' +
-          '<div style="font-size:1.6rem;line-height:1">' + m.icon + '</div>' +
-          '<h3 class="mt-1">' + esc(m.title) + '</h3>' +
-          '<div class="muted small" style="font-style:italic">' + esc(m.en) + '</div>' +
-          '<div class="tag tag-brass" style="margin:12px 0">目标 · ' + esc(m.goal) + '</div>' +
-          '<p class="small">' + esc(m.desc) + '</p>' +
-          '<ol class="plain-list small">' + m.steps.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + '</ol>' +
-          (m.tool ? '<div class="notice notice-info mb-0 small"><span class="ico">🧰</span><span>' + esc(m.tool) + '</span></div>' : '') +
-        '</article>';
+  function initHomeProgress() {
+    if (!window.StudyStats) return;
+    function render() {
+      var now = new Date();
+      var time = byId("homeDate");
+      time.dateTime = window.StudyStats.dateKey(now);
+      time.textContent = new Intl.DateTimeFormat("zh-CN", {
+        month: "long", day: "numeric", weekday: "long"
+      }).format(now);
+      var progress = Store.get(window.StudyStats.key, {});
+      var stats = window.StudyStats.summarize(progress, now);
+      byId("homeLearned").textContent = stats.today.learned + " / " + stats.goal;
+      byId("homeDue").textContent = stats.due;
+      byId("homeStreak").textContent = stats.streak;
+      byId("homeStart").firstChild.nodeValue = progress && Object.keys(progress.days || {}).length
+        ? "继续背单词 " : "开始背单词 ";
+      var max = Math.max.apply(null, stats.recent.map(function (day) { return day.learned + day.reviewed; }));
+      byId("homeWeekNote").textContent = max
+        ? "复习次数含同一词的多次作答。"
+        : "这 7 天还没有背词记录。作答后会显示在这里。";
+      var weekdays = ["日", "一", "二", "三", "四", "五", "六"];
+      byId("homeWeek").innerHTML = stats.recent.map(function (day) {
+        var total = day.learned + day.reviewed;
+        var text = day.key + "，新学 " + day.learned + " 词，复习 " + day.reviewed + " 次";
+        var height = max ? Math.round(total / max * 100) : 0;
+        return '<li aria-label="' + text + '" title="' + text + '">' +
+          '<span class="week-count" aria-hidden="true">' + (max ? total : "") + '</span>' +
+          '<span class="week-bar" aria-hidden="true"><i style="height:' + height + '%"></i></span>' +
+          '<span class="week-day" aria-hidden="true">' + weekdays[day.weekday] + '</span></li>';
+      }).join("");
+    }
+    render();
+    window.addEventListener("pageshow", render);
+    window.addEventListener("focus", render);
+    window.addEventListener("storage", function (event) { if (!event.key || event.key === window.StudyStats.key) render(); });
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) render(); });
+  }
+
+  function initSources() {
+    var data = window.CATALOG_OVERVIEW;
+    var list = byId("sourceBooks");
+    if (!data || !list) return;
+    byId("sourceTotal").textContent = data.words.toLocaleString("zh-CN");
+    byId("sourceExamples").textContent = data.examples.toLocaleString("zh-CN");
+    byId("sourceExtra").textContent = (data.words - data.siteWords).toLocaleString("zh-CN");
+    byId("sourceThemed").textContent = data.themed.toLocaleString("zh-CN");
+    list.innerHTML = data.books.map(function (book) {
+      return "<tr><th scope=\"row\">" + esc(book.name) + "</th><td>" + book.total.toLocaleString("zh-CN") + "</td></tr>";
     }).join("");
-    stagger(wrap.children, 1);
   }
 
   /* ======================================================================
      11 · 词库
      ====================================================================== */
-  /* 词书归属：可能是字符串（项目原有）或数组（重叠词书，如 ["cet4","cet6"]）。
-     返回主词书（数组取第一个），另提供 belongsTo() 做归属判断。 */
-  function bookOf(w) {
-    var b = w.b;
-    if (!b) return "core";
-    return (b instanceof Array) ? (b[0] || "core") : b;
-  }
-
-  /* 某词是否属于指定词书（支持重叠） */
-  function belongsTo(w, bookId) {
-    var b = w.b;
-    if (!b) return bookId === "core";
-    if (b instanceof Array) return b.indexOf(bookId) !== -1;
-    return b === bookId;
-  }
-
-  function allWords() {
-    // 按单词去重，保留第一次出现的释义
-    var seen = {}, out = [];
-    (window.WORD_BANK || []).forEach(function (w) {
-      var k = w.w.toLowerCase();
-      if (seen[k]) return;
-      seen[k] = 1;
-      out.push(w);
-    });
-    return out;
-  }
-
   function initVocabulary() {
     var listEl = byId("wordList");
     if (!listEl) return;
@@ -353,17 +360,19 @@
     var countEl = byId("wordCount");
     var moreBtn = byId("wordMore");
     var bookBar = byId("bookTabs");
-    var words = allWords();
+    var examplesEl = byId("wordExamples");
+    var words = window.WordCatalog.all();
+    var full = Array.isArray(window.WORD_BANK_EXTRA);
 
     var PAGE = 24;
-    var state = { book: "all", cat: "all", q: "", shown: PAGE, filtered: words };
+    var state = { book: "all", cat: "all", q: "", examples: false, shown: PAGE, filtered: words };
 
     /* --- 词书 tab --- */
     if (bookBar) {
       var counts = { all: words.length };
       words.forEach(function (w) {
         (window.WORDBOOKS || []).forEach(function (bk) {
-          if (belongsTo(w, bk.id)) counts[bk.id] = (counts[bk.id] || 0) + 1;
+          if (w.b.indexOf(bk.id) !== -1) counts[bk.id] = (counts[bk.id] || 0) + 1;
         });
       });
       var html = '<button class="tab active" data-tab="all" role="tab" aria-selected="true">全部 <span class="muted">' + counts.all + '</span></button>';
@@ -410,6 +419,12 @@
       }, 160));
     }
 
+    if (examplesEl) examplesEl.addEventListener("change", function () {
+      state.examples = examplesEl.checked;
+      state.shown = PAGE;
+      render();
+    });
+
     if (moreBtn) {
       moreBtn.addEventListener("click", function () {
         state.shown += PAGE;
@@ -418,8 +433,9 @@
     }
 
     function matches(w) {
-      if (state.book !== "all" && !belongsTo(w, state.book)) return false;
+      if (state.book !== "all" && w.b.indexOf(state.book) === -1) return false;
       if (state.cat !== "all" && w.c !== state.cat) return false;
+      if (state.examples && (!w.e || !w.z)) return false;
       if (state.q) {
         var q = state.q;
         if (w.w.toLowerCase().indexOf(q) === -1 &&
@@ -447,23 +463,23 @@
 
     function cardHTML(w) {
       var cat = (window.WORD_CATEGORIES || []).find(function (c) { return c.id === w.c; });
-      var book = (window.WORDBOOKS || []).find(function (b) { return b.id === bookOf(w); });
+      var books = (window.WORDBOOKS || []).filter(function (b) { return w.b.indexOf(b.id) !== -1; });
       return '<article class="word-card">' +
           '<div class="word-head">' +
-            '<span class="word-en">' + esc(w.w) + '</span>' +
+            '<span class="word-en" lang="en">' + esc(w.w) + '</span>' +
             '<span class="word-phon">' + esc(w.p) + '</span>' +
             '<span class="word-pos">' + esc(w.t) + '</span>' +
-            '<button class="speak-btn" data-speak="' + esc(w.w) + '" title="朗读" style="margin-left:auto">🔊</button>' +
+            '<button class="speak-btn" data-speak="' + esc(w.w) + '" aria-label="朗读：' + esc(w.w) + '" style="margin-left:auto">🔊</button>' +
           '</div>' +
           '<div class="word-zh">' + esc(w.m) + '</div>' +
           (w.e
             ? '<div class="word-ex">' +
-                '<span class="en">' + esc(w.e) + '</span>' +
+                '<span class="en" lang="en">' + esc(w.e) + '</span>' +
                 '<span class="zh">' + esc(w.z) + '</span>' +
               '</div>'
             : '') +
           '<div class="tags">' +
-            (book && book.id !== "core" ? '<span class="tag tag-brass">' + book.icon + ' ' + esc(book.name) + '</span>' : '') +
+            books.map(function (book) { return '<span class="tag tag-brass">' + esc(book.name) + '</span>'; }).join("") +
             (cat ? '<span class="tag">' + cat.icon + ' ' + esc(cat.name) + '</span>' : '') +
           '</div>' +
         '</article>';
@@ -485,6 +501,7 @@
         countEl.textContent = state.filtered.length
           ? "共 " + state.filtered.length + " 个单词，已显示 " + slice.length + " 个"
           : "没有匹配的单词";
+        if (!full) countEl.textContent += "（扩展词库未加载，联网后刷新可恢复）";
       }
 
       if (!state.filtered.length) {
@@ -1159,7 +1176,8 @@
 
     var page = document.body.getAttribute("data-page");
 
-    if (page === "home")       { initMethods(); initHomeStats(); }
+    if (page === "home")       { initHomeStats(); initHomeProgress(); }
+    if (page === "sources")    initSources();
     if (page === "vocabulary") initVocabulary();
     if (page === "grammar")    initGrammar();
     if (page === "sentences")  initSentences();

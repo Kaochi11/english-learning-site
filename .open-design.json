@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "designSystem": {
+    "slug": "claude",
+    "path": "design-systems/claude"
+  },
+  "skill": {
+    "slug": "web-prototype-taste-editorial",
+    "path": "design-templates/web-prototype-taste-editorial",
+    "kind": "design-template"
+  },
+  "boundAt": "2026-11-20T05:33:17Z"
+}

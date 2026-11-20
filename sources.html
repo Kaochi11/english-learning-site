@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf9f5">
+  <meta name="description" content="英语学习站词库来源、词书统计口径、学习记录含义及参考资料。">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <title>数据与参考资料｜英语学习站</title>
+</head>
+<body data-page="sources">
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">EN</span><span>英语学习站<small>English Learning Hub</small></span></a>
+    <span class="spacer"></span>
+    <a href="index.html">返回首页</a>
+    <button class="icon-btn" type="button" id="themeBtn" aria-label="切换主题">☾</button>
+  </div>
+</header>
+<main class="container source-copy">
+  <div class="page-head">
+    <h1>数据与参考资料</h1>
+    <p class="lead">这里说明词库从哪里来、页面上的数字怎么算，以及哪些资料可以用来核对考试要求。</p>
+  </div>
+  <section class="card mb-2" aria-labelledby="source-words">
+    <h2 id="source-words">词库来源与覆盖</h2>
+    <p>共有 <b id="sourceTotal">—</b> 个去重词条；其中 <b id="sourceExamples">—</b> 个带双语例句，<b id="sourceThemed">—</b> 个有主题标签。扩展数据新增了 <b id="sourceExtra">—</b> 个独有词条，也为部分原有词条补充了词书归属。</p>
+    <p>扩展词库派生自 <a href="https://github.com/skywind3000/ECDICT">ECDICT</a>（<a href="LICENSE-ECDICT.txt">MIT 许可</a>）。扩展文件以音标、词性和释义为主，部分词条另附双语例句；已有例句没有逐条标注出处。本站现有副本也未记录 ECDICT 的具体上游版本和筛选脚本，因此不能用这些数字推断官方考试覆盖率。</p>
+    <p>按英文拼写去除首尾空格、忽略大小写后合并，优先保留站内释义和双语例句，例句缺失时再从扩展数据补齐。同一词条可以归入多本词书，所以各词书不能直接相加。词汇标签不是官方考纲。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">词书</th><th scope="col">去重词条数</th></tr></thead>
+        <tbody id="sourceBooks"></tbody>
+      </table>
+    </div>
+  </section>
+  <section class="card mb-2" aria-labelledby="source-progress">
+    <h2 id="source-progress">学习记录怎么计算</h2>
+    <ul>
+      <li><b>新学词数：</b>第一次对词条作答即计入，不要求答对，也不等于掌握。</li>
+      <li><b>复习次数：</b>同一个词之后的每次作答，包括当组重试。</li>
+      <li><b>到期词：</b>做过且已到计划复习时间的去重词条。首页跨全部词书，背词页只显示已选词书中的到期词。</li>
+      <li><b>连续打卡：</b>按浏览器本地日期计算；当天还没练时，从昨天往前数。</li>
+    </ul>
+    <p>进度只保存在当前浏览器，不跨设备同步。清除网站数据会丢失本机记录。</p>
+  </section>
+  <section class="card mb-2" id="research" aria-labelledby="source-research">
+    <h2 id="source-research">学习方法与考试参考</h2>
+    <p>Dunlosky 等人（2013）的综述评估了多种学习方法，将练习测试和分散练习评为普适性较高的方法。<a href="https://doi.org/10.1177/1529100612453266">阅读论文与摘要</a>。本站的记忆盒间隔是产品规则，不是该论文规定的唯一最佳间隔，也不保证提分。</p>
+    <p>站内备考内容用于练习，不是官方真题或报名指引。正式题型、规则和通知请查 <a href="https://ielts.org/take-a-test/test-types/ielts-academic-test">IELTS Academic 官网</a> 或 <a href="https://cet.neea.edu.cn/">中国教育考试网 CET 专区</a>。</p>
+  </section>
+  <a class="btn btn-ghost" href="vocabulary.html">返回词库</a>
+</main>
+<script src="assets/js/catalog-overview.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+</body>
+</html>

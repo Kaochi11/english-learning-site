@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no,email=no,address=no">
-<meta name="theme-color" content="#16324F">
+<meta name="theme-color" content="#faf9f5">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="英语学习站">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="assets/icon-180.png">
 <title>背单词 · 英语学习站</title>
 <meta name="description" content="可选词书的背单词工具：高考、四六级、雅思、核心基础共八本词书，内置间隔重复算法、学习热力图与成就系统。">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2316324F'/%3E%3Ctext x='32' y='44' font-size='30' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'%3EEN%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body data-page="memorize">
@@ -42,6 +42,7 @@
 
     <!-- ==================== 设置 ==================== -->
     <div id="setupView">
+      <p class="notice notice-info hide" id="memLimited">扩展词库未加载，当前可练习站内基础条目。联网后刷新以恢复完整词库。</p>
 
       <!-- ---- 今日卡片 ---- -->
       <div class="today-card">
@@ -55,9 +56,9 @@
           <div class="tc-xp" id="xpText">0 / 300 XP</div>
           <div class="tc-stats">
             <div class="tc-stat"><b id="stStreak" class="flame">0</b><span>连续打卡（天）</span></div>
-            <div class="tc-stat"><b id="stDue">0</b><span>待复习（词）</span></div>
+            <div class="tc-stat"><b id="stDue">0</b><span>已选到期（词）</span></div>
             <div class="tc-stat"><b id="stLearned">0</b><span>累计学习（词）</span></div>
-            <div class="tc-stat"><b id="stMastered">0</b><span>已掌握（词）</span></div>
+            <div class="tc-stat"><b id="stMastered">0</b><span>第 6 盒（词）</span></div>
           </div>
         </div>
         <div class="tc-cta">
@@ -95,7 +96,7 @@
         <div class="row between mb-2">
           <div>
             <h4 class="mb-0">最近 12 周</h4>
-            <div class="muted small">颜色越深，那天学的词越多</div>
+            <div class="muted small">颜色越深，当天的新学次数与复习次数之和越多</div>
           </div>
           <div class="progress-pill" id="hmTotal">累计 0 天</div>
         </div>
@@ -200,7 +201,7 @@
       <div class="card card-pad-lg center">
         <div class="result-emoji" id="resultEmoji">🏆</div>
         <h2 class="mb-0">这一组完成了</h2>
-        <p class="muted small">坚持复习，这些词很快就会进入长期记忆。</p>
+        <p class="muted small">下次练习时，系统会优先安排到期的词。</p>
 
         <div class="grid grid-3 grid-stats mt-2">
           <div class="stat-box"><b id="resRate">0%</b><span>本组正确率</span></div>
@@ -233,21 +234,22 @@
       <article class="card">
         <h3>为什么答对之后越隔越久？</h3>
         <p class="muted small mb-0">
-          这是艾宾浩斯遗忘曲线的应用：刚记住的内容遗忘最快，重复几次后遗忘变慢。
+          间隔是本站记忆盒的固定规则。<a href="sources.html#research">了解间隔练习的研究依据</a>。
           所以复习间隔应该越来越长，而不是每天从头背一遍。
         </p>
       </article>
       <article class="card">
         <h3>为什么答错要回到第一格？</h3>
         <p class="muted small mb-0">
-          答错说明这个记忆已经接近消失，再用长间隔复习没有意义。
+          答错时缩短下一次复习间隔，先给自己一次重新回忆的机会。
           回到短间隔重新巩固，比硬往前推更快。
         </p>
       </article>
       <article class="card">
         <h3>XP 和等级是怎么算的？</h3>
         <p class="muted small mb-0">
-          学一个新词 10 XP，每次复习 4 XP，进入「已掌握」再额外加 20 XP。
+          首次作答 10 XP，再次作答 4 XP。当前处于第 6 盒的词额外计 20 XP。
+          第 6 盒代表练习等级，不是永久掌握；到期后仍会复习。
           等级只是把长期进步可视化，别为了刷 XP 而跳过复习。
         </p>
       </article>
@@ -278,7 +280,9 @@
 </footer>
 
 <script src="assets/js/data.js"></script>
-  <script src="assets/js/data-extra.js"></script>
+<script src="assets/js/data-extra.js"></script>
+<script src="assets/js/word-catalog.js"></script>
+<script src="assets/js/study-stats.js"></script>
 <script src="assets/js/app.js"></script>
 <script src="assets/js/memorize.js"></script>
 </body>

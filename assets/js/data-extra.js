@@ -1,6 +1,6 @@
-/* 自动生成 v3：ECDICT (MIT) 派生；w=单词 p=音标 t=词性 m=释义 b=词书
-   词书可重叠：六级含四级、雅思含四六级（考试真实结构）。
-   本批为「标准层」：无例句 e / 无例句翻译 z，使用方需降级处理。 */
+/* 自动生成 v3：ECDICT (MIT) 派生，见 ../../LICENSE-ECDICT.txt。
+   w=单词 p=音标 t=词性 m=释义 b=词书。标签是学习参考，不代表官方考试范围。
+   部分词条另附例句 e 与翻译 z；归属合并在 word-catalog.js 完成。 */
 var WORD_BANK_EXTRA = [
 
   /* ===== gaokao (3084 词) ===== */
@@ -21567,30 +21567,3 @@ var WORD_BANK_EXTRA = [
   { w: "ballast", p: "/bæləst/", t: "n", m: "压载物", b: "ielts-core" },
   { w: "interdependent", p: "/intədiˈpendənt/", t: "adj", m: "相互依赖的", b: "ielts-core" },
 ];
-/* ---- 合并进主词库（支持词书重叠）----
-   同一单词可能在多本词书出现（六级含四级、雅思含四六级），按 w 合并为一条，
-   把多本词书合并进 b 数组。项目原有 862 条优先。 */
-(function () {
-  if (typeof WORD_BANK === "undefined" || typeof WORD_BANK_EXTRA === "undefined") return;
-  var byWord = Object.create(null);
-  WORD_BANK.forEach(function (x) { if (x && x.w) byWord[x.w.toLowerCase()] = x; });
-  var added = 0, merged = 0;
-  WORD_BANK_EXTRA.forEach(function (x) {
-    if (!x || !x.w) return;
-    var k = x.w.toLowerCase();
-    var hit = byWord[k];
-    if (!hit) {
-      x.b = [x.b];
-      byWord[k] = x;
-      WORD_BANK.push(x);
-      added++;
-      return;
-    }
-    if (typeof hit.b === "string") hit.b = [hit.b];
-    if (hit.b.indexOf(x.b) === -1) { hit.b.push(x.b); merged++; }
-  });
-  if (typeof window !== "undefined") {
-    window.WORD_BANK_EXTRA_ADDED = added;
-    window.WORD_BANK_EXTRA_MERGED = merged;
-  }
-})();

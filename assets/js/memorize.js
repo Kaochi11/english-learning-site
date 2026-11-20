@@ -17,7 +17,7 @@
   var MAX_DUE_PER_SESSION = 30;
   var MAX_NEW_PER_SESSION = 20;
 
-  var STORE_KEY = "en-site-progress-v1";
+  var STORE_KEY = window.StudyStats.key;
 
   /* ======================================================================
      1 · 词库
@@ -36,21 +36,14 @@
   }
 
   function buildDeck() {
-    var seen = {};
-    var out = [];
-    (window.WORD_BANK || []).forEach(function (w) {
-      var key = w.w.toLowerCase();
-      if (seen[key]) return;
-      var item = {
-        key: key,
+    return window.WordCatalog.all().map(function (w) {
+      return {
+        key: w.key,
         w: w.w, p: w.p, t: w.t, m: w.m, e: w.e, z: w.z,
         book: w.b || "core",        // 字符串或数组（重叠词书）
         cat: w.c
       };
-      seen[key] = item;
-      out.push(item);
     });
-    return out;
   }
 
   var DECK = buildDeck();
@@ -68,7 +61,6 @@
     return {
       words: {},
       days: {},
-      streak: { current: 0, last: null },
       settings: { books: ["core"], mode: "flash", goal: 20 }
     };
   }
@@ -79,10 +71,9 @@
     if (!saved || typeof saved !== "object") return base;
     base.words = saved.words || {};
     base.days = saved.days || {};
-    base.streak = saved.streak || base.streak;
     var s = saved.settings || {};
     base.settings.mode = s.mode || base.settings.mode;
-    base.settings.goal = s.goal || base.settings.goal;
+    base.settings.goal = window.StudyStats.goal(s);
     // 兼容旧版本（那时存的是 cats）
     if (Array.isArray(s.books)) base.settings.books = s.books;
     else if (Array.isArray(s.cats) && s.cats.length) {
@@ -113,32 +104,23 @@
     return progress.days[k] || { learned: 0, reviewed: 0, correct: 0, wrong: 0 };
   }
 
-  function touchStreak() {
-    var k = today();
-    if (progress.streak.last === k) return;
-    var yesterday = window.todayKey(Date.now() - DAY);
-    progress.streak.current = (progress.streak.last === yesterday) ? progress.streak.current + 1 : 1;
-    progress.streak.last = k;
-  }
-
   /* ======================================================================
      3 · 统计
      ====================================================================== */
   function stats() {
     var now = Date.now();
-    var learned = 0, mastered = 0, due = 0;
+    var learned = 0, mastered = 0;
     Object.keys(progress.words).forEach(function (k) {
       var s = progress.words[k];
       if (s.seen > 0) learned++;
       if (s.box >= MASTER_BOX) mastered++;
-      else if (s.due <= now) due++;
     });
     var d = dayStats(false);
     return {
-      learnedTotal: learned, mastered: mastered, due: due,
+      learnedTotal: learned, mastered: mastered, due: dueListNow(now).length,
       todayLearned: d.learned, todayReviewed: d.reviewed,
       todayCorrect: d.correct, todayWrong: d.wrong,
-      streak: progress.streak.current
+      streak: window.StudyStats.summarize(progress, new Date(now)).streak
     };
   }
 
@@ -208,11 +190,9 @@
     { id: "master100", icon: "👑", name: "百词精通",   desc: "100 个词进入长期记忆",  test: function (s) { return s.mastered >= 100; } },
     { id: "allbooks",  icon: "🗺", name: "全线启动",   desc: "每本词书都学过至少一个词", test: function () {
         var covered = {};
-        Object.keys(progress.words).forEach(function (k) {
-          var w = progress.words[k];
-          if (!w.seen) return;
-          var item = DECK.filter(function (d) { return d.key === k; })[0];
-          if (item) covered[item.book] = 1;
+        DECK.forEach(function (item) {
+          var w = progress.words[item.key];
+          if (w && w.seen) item.book.forEach(function (id) { covered[id] = 1; });
         });
         return BOOKS.every(function (b) { return covered[b.id]; });
       } }
@@ -268,35 +248,32 @@
     var el = window.byId("heatmap");
     if (!el) return;
 
-    var CELLS = 84;                       // 12 周
-    var todayMs = new Date(window.todayKey()).getTime();
-    var startMs = todayMs - (CELLS - 1) * DAY;
-    // 起点回退到周一，保证每列是一整周
-    var dow = (new Date(startMs).getDay() + 6) % 7;
-    startMs -= dow * DAY;
+    var now = new Date();
+    var dow = (now.getDay() + 6) % 7;
+    // 当前周 + 前 11 个日历周，周一对齐。
+    var start = window.StudyStats.shiftDay(now, -77 - dow);
 
     var html = "";
     var activeDays = 0;
-    for (var ms = startMs; ms <= todayMs; ms += DAY) {
-      var key = window.todayKey(ms);
+    for (var day = start; day <= now; day = window.StudyStats.shiftDay(day, 1)) {
+      var key = window.todayKey(day);
       var st = progress.days[key];
       var n = st ? (st.learned + st.reviewed) : 0;
       if (n > 0) activeDays++;
       var lv = n === 0 ? 0 : n < 10 ? 1 : n < 25 ? 2 : n < 50 ? 3 : 4;
       var cls = lv ? "hm-cell lv" + lv : "hm-cell";
       if (key === window.todayKey()) cls += " today";
-      html += '<span class="' + cls + '" title="' + key + "　" + n + ' 词"></span>';
+      html += '<span class="' + cls + '" title="' + key + "　" + n + ' 次作答"></span>';
     }
     // 补齐最后一周
-    var tail = (7 - ((new Date(todayMs).getDay() + 6) % 7) - 1);
+    var tail = 6 - dow;
     for (var t = 0; t < tail; t++) html += '<span class="hm-cell blank"></span>';
 
     el.innerHTML = html;
 
     var total = window.byId("hmTotal");
     if (total) {
-      total.textContent = "累计 " + activeDays + " 天";
-      total.className = "progress-pill" + (activeDays > 0 ? "" : "");
+      total.textContent = "活跃 " + activeDays + " 天";
     }
   }
 
@@ -347,7 +324,7 @@
     deckForBooks().forEach(function (item) {
       var s = progress.words[item.key];
       if (!s || s.seen === 0) newList.push(item);
-      else if (s.due <= now && s.box < MASTER_BOX) dueList.push(item);
+      else if (window.StudyStats.isDue(s, now)) dueList.push(item);
     });
 
     dueList.sort(function (a, b) { return progress.words[a.key].due - progress.words[b.key].due; });
@@ -356,16 +333,15 @@
     var learnedToday = dayStats(false).learned;
     var allowance = Math.max(0, Math.min(goal - learnedToday, MAX_NEW_PER_SESSION));
 
-    return window.shuffle(
-      dueList.slice(0, MAX_DUE_PER_SESSION).concat(newList.slice(0, allowance))
-    );
+    if (dueList.length >= MAX_DUE_PER_SESSION) allowance = 0;
+    return dueList.slice(0, MAX_DUE_PER_SESSION).concat(window.shuffle(newList.slice(0, allowance)));
   }
 
-  function dueListNow() {
-    var now = Date.now();
+  function dueListNow(now) {
+    now = now === undefined ? Date.now() : now;
     return deckForBooks().filter(function (item) {
       var s = progress.words[item.key];
-      return s && s.seen > 0 && s.due <= now && s.box < MASTER_BOX;
+      return window.StudyStats.isDue(s, now);
     }).sort(function (a, b) { return progress.words[a.key].due - progress.words[b.key].due; });
   }
 
@@ -398,7 +374,6 @@
     }
 
     if (isNew) d.learned++; else d.reviewed++;
-    touchStreak();
     save();
   }
 
@@ -564,7 +539,7 @@
 
     /* 按钮状态：顶部 CTA 与底部常驻条保持一致 */
     var q = buildQueue();
-    var label = q.length ? "开始学习（" + q.length + " 个词）" : "今日任务已完成";
+    var label = q.length ? "开始学习（" + q.length + " 个词）" : "当前没有待练词";
     ["startBtn", "startBtn2"].forEach(function (id) {
       var b = window.byId(id);
       if (!b) return;
@@ -572,7 +547,7 @@
       b.textContent = label;
     });
     var hint = window.byId("startHint");
-    if (hint) hint.textContent = q.length ? "" : "明天再来，先休息一下";
+    if (hint) hint.textContent = q.length ? "" : "等下次复习到期，或切换词书";
 
     var sbCount = window.byId("sbCount");
     if (sbCount) {
@@ -1012,6 +987,7 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     if (document.body.getAttribute("data-page") !== "memorize") return;
+    if (!Array.isArray(window.WORD_BANK_EXTRA)) window.byId("memLimited").classList.remove("hide");
     bindSetup();
     refreshSetup();
     show("setup");
